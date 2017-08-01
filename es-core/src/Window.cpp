@@ -65,9 +65,9 @@ GuiComponent* Window::peekGui()
 	return mGuiStack.back();
 }
 
-bool Window::init(unsigned int width, unsigned int height)
+bool Window::init(unsigned int width, unsigned int height, unsigned int bottom)
 {
-	if(!Renderer::init(width, height))
+	if(!Renderer::init(width, height, bottom))
 	{
 		LOG(LogError) << "Renderer failed to initialize!";
 		return false;
@@ -294,7 +294,7 @@ void Window::renderLoadingScreen()
 {
 	Eigen::Affine3f trans = Eigen::Affine3f::Identity();
 	Renderer::setMatrix(trans);
-	Renderer::drawRect(0, 0, Renderer::getScreenWidth(), Renderer::getScreenHeight(), 0x000000FF);
+	Renderer::drawRect(0, Renderer::getScreenBottom(), Renderer::getScreenWidth(), Renderer::getScreenHeight(), 0x000000FF);
 
 	ImageComponent splash(this, true);
 	splash.setResize(Renderer::getScreenWidth() * 0.6f, 0.0f);

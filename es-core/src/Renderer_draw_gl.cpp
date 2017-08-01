@@ -31,7 +31,7 @@ namespace Renderer {
 
 	void pushClipRect(Eigen::Vector2i pos, Eigen::Vector2i dim)
 	{
-		Eigen::Vector4i box(pos.x(), pos.y(), dim.x(), dim.y());
+        Eigen::Vector4i box(pos.x(), pos.y()-getScreenBottom(), dim.x(), dim.y());
 		if(box[2] == 0)
 			box[2] = Renderer::getScreenWidth() - box.x();
 		if(box[3] == 0)

@@ -45,7 +45,7 @@ public:
 	void update(int deltaTime);
 	void render();
 
-	bool init(unsigned int width = 0, unsigned int height = 0);
+	bool init(unsigned int width = 0, unsigned int height = 0, unsigned int bottom = 0, float fontscale = 1.0f);
 	void deinit();
 
 	void normalizeNextUpdate();

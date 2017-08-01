@@ -30,7 +30,7 @@ namespace fs = boost::filesystem;
 
 bool scrape_cmdline = false;
 
-bool parseArgs(int argc, char* argv[], unsigned int* width, unsigned int* height)
+bool parseArgs(int argc, char* argv[], unsigned int* width, unsigned int* height, unsigned int* bottom)
 {
 	for(int i = 1; i < argc; i++)
 	{
@@ -85,7 +85,17 @@ bool parseArgs(int argc, char* argv[], unsigned int* width, unsigned int* height
 		{
 			int maxVRAM = atoi(argv[i + 1]);
 			Settings::getInstance()->setInt("MaxVRAM", maxVRAM);
-		}else if(strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)
+		}else if (strcmp(argv[i], "--bottom") == 0)
+		{
+			if(i >= argc - 1)
+            {
+                std::cerr << "Invalid bottom supplied.";
+                return false;
+            }
+            *bottom = atoi(argv[i + 1]);
+            i += 1; // skip the argument value
+		}
+		else if(strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)
 		{
 #ifdef WIN32
 			// This is a bit of a hack, but otherwise output will go to nowhere
@@ -112,6 +122,7 @@ bool parseArgs(int argc, char* argv[], unsigned int* width, unsigned int* height
 				"--vsync [1/on or 0/off]		turn vsync on or off (default is on)\n"
 				"--max-vram [size]		Max VRAM to use in Mb before swapping. 0 for unlimited\n"
 				"--help, -h			summon a sentient, angry tuba\n\n"
+                "--bottom [bottom]        set the bottom of the screen\n\n"
 				"More information available in README.md.\n";
 			return false; //exit after printing help
 		}
@@ -177,11 +188,12 @@ int main(int argc, char* argv[])
 
 	unsigned int width = 0;
 	unsigned int height = 0;
+	unsigned int bottom = 0;
 
 	std::locale::global(boost::locale::generator().generate(""));
 	boost::filesystem::path::imbue(std::locale());
 
-	if(!parseArgs(argc, argv, &width, &height))
+	if(!parseArgs(argc, argv, &width, &height, &bottom))
 		return 0;
 
 	// only show the console on Windows if HideConsole is false
@@ -237,7 +249,7 @@ int main(int argc, char* argv[])
 
 	if(!scrape_cmdline)
 	{
-		if(!window.init(width, height))
+		if(!window.init(width, height, bottom, fontscale))
 		{
 			LOG(LogError) << "Window failed to initialize!";
 			return 1;

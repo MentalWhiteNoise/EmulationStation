@@ -19,9 +19,12 @@ namespace Renderer
 
 	unsigned int display_width = 0;
 	unsigned int display_height = 0;
+	unsigned int display_bottom = 0;
 
 	unsigned int getScreenWidth() { return display_width; }
 	unsigned int getScreenHeight() { return display_height; }
+	unsigned int getScreenBottom() { return display_bottom; }
+    unsigned int getScreenSize() { return (display_height * 0.75 < display_width) ? display_height * 0.75 : display_width; }
 
 	SDL_Window* sdlWindow = NULL;
 	SDL_GLContext sdlContext = NULL;
@@ -134,19 +137,21 @@ namespace Renderer
 		SDL_Quit();
 	}
 
-	bool init(int w, int h)
+	bool init(int w, int h, int b)
 	{
 		if(w)
 			display_width = w;
 		if(h)
 			display_height = h;
+		if(b)
+			display_bottom = b;
 
 		bool createdSurface = createSurface();
 
 		if(!createdSurface)
 			return false;
 
-		glViewport(0, 0, display_width, display_height);
+		glViewport(0, display_bottom, display_width, display_height);
 
 		glMatrixMode(GL_PROJECTION);
 		glOrtho(0, display_width, display_height, 0, -1.0, 1.0);
